@@ -184,7 +184,7 @@ if (import.meta.main) {
     )
     .example(
       "Specific version",
-      "dflyhbsd-up 6.4.2",
+      "netbsd-up 10.1",
     )
     .example(
       "Local ISO file",
