@@ -1,28 +1,30 @@
-# NetBSD-UP
+# NetBSD-UP 🚀
 
 A simple command-line tool to start NetBSD virtual machines using QEMU with
 sensible defaults.
 
-## Features
+![Preview](./preview.png)
 
-- **Easy NetBSD VM setup**: Launch NetBSD virtual machines with a single command
-- **Automatic ISO download**: Downloads NetBSD ISO images from official CDN
-- **Version-aware**: Specify NetBSD versions and automatically construct
+## ✨ Features
+
+- 🖥️ **Easy NetBSD VM setup**: Launch NetBSD virtual machines with a single command
+- 📥 **Automatic ISO download**: Downloads NetBSD ISO images from official CDN
+- 🏷️ **Version-aware**: Specify NetBSD versions and automatically construct
   download URLs
-- **Flexible input**: Support for local ISO files, URLs, or version numbers
-- **Configurable VM settings**: Customize CPU, memory, cores, and disk options
-- **KVM acceleration**: Automatically enables hardware virtualization for better
+- 🔄 **Flexible input**: Support for local ISO files, URLs, or version numbers
+- ⚙️ **Configurable VM settings**: Customize CPU, memory, cores, and disk options
+- ⚡ **KVM acceleration**: Automatically enables hardware virtualization for better
   performance
-- **Network forwarding**: SSH access via port 2222 on the host
-- **Serial console**: No GUI required - works entirely in terminal
+- 🌐 **Network forwarding**: SSH access via port 2222 on the host
+- 💻 **Serial console**: No GUI required - works entirely in terminal
 
-## Requirements
+## 📋 Requirements
 
-- [Deno](https://deno.com/) runtime
-- QEMU with KVM support
-- `curl` for downloading ISO images
+- 🦕 [Deno](https://deno.com/) runtime
+- 🖥️ QEMU with KVM support
+- 📥 `curl` for downloading ISO images
 
-## Installation
+## 🚚 Installation
 
 ```bash
 # Clone the repository
@@ -33,9 +35,9 @@ cd netbsd-up
 chmod +x main.ts
 ```
 
-## Usage
+## 🎯 Usage
 
-### Basic Usage
+### ⭐ Basic Usage
 
 Start a NetBSD 10.1 VM with default settings:
 
@@ -43,32 +45,32 @@ Start a NetBSD 10.1 VM with default settings:
 ./main.ts
 ```
 
-### Specify NetBSD Version
+### 🏷️ Specify NetBSD Version
 
 ```bash
 ./main.ts 10.1
 ./main.ts 9.3
 ```
 
-### Use Local ISO File
+### 📁 Use Local ISO File
 
 ```bash
 ./main.ts /path/to/netbsd.iso
 ```
 
-### Download from Custom URL
+### 🌐 Download from Custom URL
 
 ```bash
 ./main.ts https://cdn.netbsd.org/pub/NetBSD/images/10.1/NetBSD-10.1-amd64.iso
 ```
 
-## Console Setup
+## 🖥️ Console Setup
 
 When NetBSD boots, you'll see the boot menu. For the best experience with the
 serial console:
 
-1. **Select option `3. Drop to boot prompt`**
-2. **Configure console output:**
+1. **🔧 Select option `3. Drop to boot prompt`**
+2. **⚙️ Configure console output:**
    ```
    consdev com0
    boot
@@ -76,7 +78,7 @@ serial console:
 
 This enables proper console redirection to your terminal.
 
-### Advanced Configuration
+### ⚙️ Advanced Configuration
 
 ```bash
 # Custom CPU, memory, and cores
@@ -89,7 +91,7 @@ This enables proper console redirection to your terminal.
 ./main.ts --drive vm-disk.img --disk-format qcow2
 ```
 
-## Command Line Options
+## 🛠️ Command Line Options
 
 | Option          | Short | Description                    | Default        |
 | --------------- | ----- | ------------------------------ | -------------- |
@@ -100,9 +102,9 @@ This enables proper console redirection to your terminal.
 | `--drive`       | `-d`  | Path to VM disk image          | None           |
 | `--disk-format` |       | Disk image format              | `raw`          |
 
-## Examples
+## 📚 Examples
 
-### Default NetBSD VM
+### ⭐ Default NetBSD VM
 
 ```bash
 ./main.ts
@@ -110,13 +112,13 @@ This enables proper console redirection to your terminal.
 
 Starts NetBSD 10.1 with 2 CPU cores and 2GB RAM.
 
-### High-Performance Setup
+### 🚀 High-Performance Setup
 
 ```bash
 ./main.ts --cpus 8 --memory 8G --cpu host
 ```
 
-### Development Environment with Persistent Disk
+### 💾 Development Environment with Persistent Disk
 
 ```bash
 # Create a disk image first
@@ -126,42 +128,45 @@ qemu-img create -f qcow2 netbsd-dev.qcow2 20G
 ./main.ts --drive netbsd-dev.qcow2 --disk-format qcow2
 ```
 
-### Specific versions
+### 🔢 Specific versions
 
 ```bash
 ./main.ts 10.1
 ./main.ts 9.4
 ```
 
-## Networking
+## 🌐 Networking
 
 The VM automatically sets up network forwarding:
 
-- SSH access: `ssh -p 2222 root@localhost`
-- The VM uses QEMU's user-mode networking
+- 🔑 SSH access: `ssh -p 2222 root@localhost`
+- �️ The VM uses QEMU's user-mode networking
 
-## Version Format
+## 📋 Version Format
 
 NetBSD-UP recognizes version strings in the format:
 
-- `MAJOR.MINOR` (e.g., `10.1`, `9.3`)
+- 🔢 `MAJOR.MINOR` (e.g., `10.1`, `9.3`)
 
-The tool automatically constructs the download URL for the official NetBSD
+⚡ The tool automatically constructs the download URL for the official NetBSD
 release ISO.
 
-## Default Settings
+## ⚙️ Default Settings
 
-- **NetBSD Version**: 10.1
-- **CPU**: host (uses host CPU features)
-- **Memory**: 2GB
-- **CPU Cores**: 2
-- **Disk Format**: raw
-- **Network**: User-mode with SSH forwarding
+- **🏷️ NetBSD Version**: 10.1
+- **🖥️ CPU**: host (uses host CPU features)
+- **💾 Memory**: 2GB
+- **⚡ CPU Cores**: 2
+- **💿 Disk Format**: raw
+- **🌐 Network**: User-mode with SSH forwarding
 
-## License
-
+## 📄 License
 See [LICENSE](LICENSE) file for details.
 
-## Contributing
-
+## Contributing 🤝
 Contributions are welcome! Please feel free to submit issues and pull requests.
+
+> [!NOTE]
+>
+> This tool is designed for development and testing purposes. For production
+> NetBSD deployments, consider using proper installation methods.
