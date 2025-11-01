@@ -48,26 +48,26 @@ deno install -A -g -r -f --config deno.json ./main.ts -n netbsd-up
 Start a NetBSD 10.1 VM with default settings:
 
 ```bash
-./main.ts
+netbsd-up
 ```
 
 ### 🏷️ Specify NetBSD Version
 
 ```bash
-./main.ts 10.1
-./main.ts 9.3
+netbsd-up 10.1
+netbsd-up 9.3
 ```
 
 ### 📁 Use Local ISO File
 
 ```bash
-./main.ts /path/to/netbsd.iso
+netbsd-up /path/to/netbsd.iso
 ```
 
 ### 🌐 Download from Custom URL
 
 ```bash
-./main.ts https://cdn.netbsd.org/pub/NetBSD/images/10.1/NetBSD-10.1-amd64.iso
+netbsd-up https://cdn.netbsd.org/pub/NetBSD/images/10.1/NetBSD-10.1-amd64.iso
 ```
 
 ## 🖥️ Console Setup
@@ -88,13 +88,13 @@ This enables proper console redirection to your terminal.
 
 ```bash
 # Custom CPU, memory, and cores
-./main.ts --cpu host --memory 4G --cpus 4
+netbsd-up --cpu host --memory 4G --cpus 4
 
 # Save downloaded ISO to specific location
-./main.ts --output netbsd-10.1.iso
+netbsd-up --output netbsd-10.1.iso
 
 # Use existing disk image
-./main.ts --drive vm-disk.img --disk-format qcow2
+netbsd-up --drive vm-disk.img --disk-format qcow2
 ```
 
 ## 🛠️ Command Line Options
@@ -113,7 +113,7 @@ This enables proper console redirection to your terminal.
 ### ⭐ Default NetBSD VM
 
 ```bash
-./main.ts
+netbsd-up
 ```
 
 Starts NetBSD 10.1 with 2 CPU cores and 2GB RAM.
@@ -121,7 +121,7 @@ Starts NetBSD 10.1 with 2 CPU cores and 2GB RAM.
 ### 🚀 High-Performance Setup
 
 ```bash
-./main.ts --cpus 8 --memory 8G --cpu host
+netbsd-up --cpus 8 --memory 8G --cpu host
 ```
 
 ### 💾 Development Environment with Persistent Disk
@@ -137,8 +137,8 @@ qemu-img create -f qcow2 netbsd-dev.qcow2 20G
 ### 🔢 Specific versions
 
 ```bash
-./main.ts 10.1
-./main.ts 9.4
+netbsd-up 10.1
+netbsd-up 9.4
 ```
 
 ## 🌐 Networking
