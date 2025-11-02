@@ -7,14 +7,16 @@ sensible defaults.
 
 ## ✨ Features
 
-- 🖥️ **Easy NetBSD VM setup**: Launch NetBSD virtual machines with a single command
+- 🖥️ **Easy NetBSD VM setup**: Launch NetBSD virtual machines with a single
+  command
 - 📥 **Automatic ISO download**: Downloads NetBSD ISO images from official CDN
 - 🏷️ **Version-aware**: Specify NetBSD versions and automatically construct
   download URLs
 - 🔄 **Flexible input**: Support for local ISO files, URLs, or version numbers
-- ⚙️ **Configurable VM settings**: Customize CPU, memory, cores, and disk options
-- ⚡ **KVM acceleration**: Automatically enables hardware virtualization for better
-  performance
+- ⚙️ **Configurable VM settings**: Customize CPU, memory, cores, and disk
+  options
+- ⚡ **KVM acceleration**: Automatically enables hardware virtualization for
+  better performance
 - 🌐 **Network forwarding**: SSH access via port 2222 on the host
 - 💻 **Serial console**: No GUI required - works entirely in terminal
 
@@ -99,14 +101,15 @@ netbsd-up --drive vm-disk.img --disk-format qcow2
 
 ## 🛠️ Command Line Options
 
-| Option          | Short | Description                    | Default        |
-| --------------- | ----- | ------------------------------ | -------------- |
-| `--output`      | `-o`  | Output path for downloaded ISO | Auto-generated |
-| `--cpu`         | `-c`  | CPU type to emulate            | `host`         |
-| `--cpus`        | `-C`  | Number of CPU cores            | `2`            |
-| `--memory`      | `-m`  | Amount of VM memory            | `2G`           |
-| `--drive`       | `-d`  | Path to VM disk image          | None           |
-| `--disk-format` |       | Disk image format              | `raw`          |
+| Option          | Short | Description                                                  | Default        |
+| --------------- | ----- | ------------------------------------------------------------ | -------------- |
+| `--output`      | `-o`  | Output path for downloaded ISO                               | Auto-generated |
+| `--cpu`         | `-c`  | CPU type to emulate                                          | `host`         |
+| `--cpus`        | `-C`  | Number of CPU cores                                          | `2`            |
+| `--memory`      | `-m`  | Amount of VM memory                                          | `2G`           |
+| `--drive`       | `-d`  | Path to VM disk image                                        | None           |
+| `--disk-format` |       | Disk image format                                            | `raw`          |
+| `--bridge`      | `-b`  | Name of the network bridge to use for networking (e.g., br0) | None           |
 
 ## 📚 Examples
 
@@ -167,9 +170,11 @@ release ISO.
 - **🌐 Network**: User-mode with SSH forwarding
 
 ## 📄 License
+
 See [LICENSE](LICENSE) file for details.
 
 ## Contributing 🤝
+
 Contributions are welcome! Please feel free to submit issues and pull requests.
 
 > [!NOTE]
