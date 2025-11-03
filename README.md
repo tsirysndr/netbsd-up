@@ -19,6 +19,11 @@ sensible defaults.
   better performance
 - 🌐 **Network forwarding**: SSH access via port 2222 on the host
 - 💻 **Serial console**: No GUI required - works entirely in terminal
+- 🔧 **VM Management**: Start, stop, inspect, and list virtual machines
+- 💾 **Persistent storage**: SQLite database to track VM states and
+  configurations
+- 🏷️ **Auto-naming**: Automatic generation of unique VM names
+- 🌉 **Bridge networking**: Support for custom network bridges
 
 ## 📋 Requirements
 
@@ -72,6 +77,38 @@ netbsd-up /path/to/netbsd.iso
 netbsd-up https://cdn.netbsd.org/pub/NetBSD/images/10.1/NetBSD-10.1-amd64.iso
 ```
 
+### 🔧 VM Management Commands
+
+List all running VMs:
+
+```bash
+netbsd-up ps
+```
+
+List all VMs (including stopped):
+
+```bash
+netbsd-up ps --all
+```
+
+Start a stopped VM:
+
+```bash
+netbsd-up start <vm-name>
+```
+
+Stop a running VM:
+
+```bash
+netbsd-up stop <vm-name>
+```
+
+Inspect VM details:
+
+```bash
+netbsd-up inspect <vm-name>
+```
+
 ## 🖥️ Console Setup
 
 When NetBSD boots, you'll see the boot menu. For the best experience with the
@@ -109,7 +146,18 @@ netbsd-up --drive vm-disk.img --disk-format qcow2
 | `--memory`      | `-m`  | Amount of VM memory                                          | `2G`           |
 | `--drive`       | `-d`  | Path to VM disk image                                        | None           |
 | `--disk-format` |       | Disk image format                                            | `raw`          |
+| `--size`        | `-s`  | Size of the disk image to create if it doesn't exist         | `20G`          |
 | `--bridge`      | `-b`  | Name of the network bridge to use for networking (e.g., br0) | None           |
+
+## 🔧 VM Management Commands
+
+| Command                    | Description                                   |
+| -------------------------- | --------------------------------------------- |
+| `netbsd-up ps`             | List all running virtual machines             |
+| `netbsd-up ps --all`       | List all virtual machines (including stopped) |
+| `netbsd-up start <name>`   | Start a stopped virtual machine               |
+| `netbsd-up stop <name>`    | Stop a running virtual machine                |
+| `netbsd-up inspect <name>` | Show detailed information about a VM          |
 
 ## 📚 Examples
 
@@ -144,6 +192,25 @@ netbsd-up 10.1
 netbsd-up 9.4
 ```
 
+### 🔧 VM Management Examples
+
+```bash
+# List all running VMs
+netbsd-up ps
+
+# List all VMs including stopped ones
+netbsd-up ps --all
+
+# Start a specific VM by name
+netbsd-up start my-netbsd-vm
+
+# Stop a running VM
+netbsd-up stop my-netbsd-vm
+
+# Get detailed information about a VM
+netbsd-up inspect my-netbsd-vm
+```
+
 ## 🌐 Networking
 
 The VM automatically sets up network forwarding:
@@ -167,7 +234,21 @@ release ISO.
 - **💾 Memory**: 2GB
 - **⚡ CPU Cores**: 2
 - **💿 Disk Format**: raw
+- **💾 Disk Size**: 20GB (when creating new disk images)
 - **🌐 Network**: User-mode with SSH forwarding
+- **🏷️ VM Names**: Auto-generated unique names using random words
+
+## 💾 Data Storage
+
+NetBSD-UP uses a SQLite database to track virtual machine states and
+configurations. The database stores:
+
+- VM names and unique identifiers
+- CPU, memory, and disk configurations
+- Network settings (bridge, MAC addresses)
+- Current status (RUNNING, STOPPED)
+- Creation timestamps
+- Process IDs for running VMs
 
 ## 📄 License
 
