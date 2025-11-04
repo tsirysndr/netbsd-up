@@ -1,5 +1,10 @@
 # NetBSD-UP 🚀
 
+[![release](https://github.com/tsirysndr/netbsd-up/actions/workflows/release.yml/badge.svg)](https://github.com/tsirysndr/netbsd-up/actions/workflows/release.yml)
+[![JSR](https://jsr.io/badges/@tsiry/netbsd-up)](https://jsr.io/@tsiry/netbsd-up)
+[![deno module](https://shield.deno.dev/x/netbsdup)](https://deno.land/x/netbsdup)
+![deno compatibility](https://shield.deno.dev/deno/^2.5.6)
+
 A simple command-line tool to start NetBSD virtual machines using QEMU with
 sensible defaults.
 
