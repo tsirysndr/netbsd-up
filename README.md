@@ -45,7 +45,7 @@ chmod +x main.ts
 Run the following command to install the CLI:
 
 ```bash
-deno install -A -g -r -f --config deno.json ./main.ts -n netbsd-up
+deno install -A -g -r -f jsr:@tsiry/netbsd-up
 ```
 
 ## 🎯 Usage
