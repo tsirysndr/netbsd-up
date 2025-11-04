@@ -138,7 +138,7 @@ netbsd-up --cpu host --memory 4G --cpus 4
 netbsd-up --output netbsd-10.1.iso
 
 # Use existing disk image
-netbsd-up --drive vm-disk.img --disk-format qcow2
+netbsd-up --image vm-disk.img --disk-format qcow2
 ```
 
 ## 🛠️ Command Line Options
@@ -149,7 +149,7 @@ netbsd-up --drive vm-disk.img --disk-format qcow2
 | `--cpu`         | `-c`  | CPU type to emulate                                          | `host`         |
 | `--cpus`        | `-C`  | Number of CPU cores                                          | `2`            |
 | `--memory`      | `-m`  | Amount of VM memory                                          | `2G`           |
-| `--drive`       | `-d`  | Path to VM disk image                                        | None           |
+| `--image`       | `-i`  | Path to VM disk image                                        | None           |
 | `--disk-format` |       | Disk image format                                            | `raw`          |
 | `--size`        | `-s`  | Size of the disk image to create if it doesn't exist         | `20G`          |
 | `--bridge`      | `-b`  | Name of the network bridge to use for networking (e.g., br0) | None           |
@@ -187,7 +187,7 @@ netbsd-up --cpus 8 --memory 8G --cpu host
 qemu-img create -f qcow2 netbsd-dev.qcow2 20G
 
 # Start VM with the disk
-./main.ts --drive netbsd-dev.qcow2 --disk-format qcow2
+./main.ts --image netbsd-dev.qcow2 --disk-format qcow2
 ```
 
 ### 🔢 Specific versions
