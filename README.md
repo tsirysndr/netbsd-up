@@ -22,9 +22,13 @@ sensible defaults.
   options
 - ⚡ **KVM acceleration**: Automatically enables hardware virtualization for
   better performance
-- 🌐 **Network forwarding**: SSH access via port 2222 on the host
+- 🌐 **Port forwarding**: Customizable port forwarding rules for network access
 - 💻 **Serial console**: No GUI required - works entirely in terminal
-- 🔧 **VM Management**: Start, stop, inspect, and list virtual machines
+- 🔧 **VM Management**: Start, stop, restart, inspect, remove, and list virtual
+  machines
+- 📊 **VM Logging**: Centralized logging with follow support for real-time
+  monitoring
+- 🔄 **Background execution**: Run VMs in detached mode for long-running tasks
 - 💾 **Persistent storage**: SQLite database to track VM states and
   configurations
 - 🏷️ **Auto-naming**: Automatic generation of unique VM names
@@ -102,10 +106,40 @@ Start a stopped VM:
 netbsd-up start <vm-name>
 ```
 
+Start a VM in the background (detached):
+
+```bash
+netbsd-up start <vm-name> --detach
+```
+
 Stop a running VM:
 
 ```bash
 netbsd-up stop <vm-name>
+```
+
+Restart a VM:
+
+```bash
+netbsd-up restart <vm-name>
+```
+
+Remove a VM:
+
+```bash
+netbsd-up rm <vm-name>
+```
+
+View VM logs:
+
+```bash
+netbsd-up logs <vm-name>
+```
+
+Follow VM logs in real-time:
+
+```bash
+netbsd-up logs <vm-name> --follow
 ```
 
 Inspect VM details:
@@ -139,30 +173,46 @@ netbsd-up --output netbsd-10.1.iso
 
 # Use existing disk image
 netbsd-up --image vm-disk.img --disk-format qcow2
+
+# Run VM in the background
+netbsd-up --detach
+
+# Custom port forwarding (SSH on port 2222, HTTP on port 8080)
+netbsd-up --port-forward "2222:22,8080:80"
+
+# Combine multiple options
+netbsd-up --memory 8G --cpus 4 --detach --port-forward "3000:3000"
 ```
 
 ## 🛠️ Command Line Options
 
-| Option          | Short | Description                                                  | Default        |
-| --------------- | ----- | ------------------------------------------------------------ | -------------- |
-| `--output`      | `-o`  | Output path for downloaded ISO                               | Auto-generated |
-| `--cpu`         | `-c`  | CPU type to emulate                                          | `host`         |
-| `--cpus`        | `-C`  | Number of CPU cores                                          | `2`            |
-| `--memory`      | `-m`  | Amount of VM memory                                          | `2G`           |
-| `--image`       | `-i`  | Path to VM disk image                                        | None           |
-| `--disk-format` |       | Disk image format                                            | `raw`          |
-| `--size`        | `-s`  | Size of the disk image to create if it doesn't exist         | `20G`          |
-| `--bridge`      | `-b`  | Name of the network bridge to use for networking (e.g., br0) | None           |
+| Option           | Short | Description                                                  | Default        |
+| ---------------- | ----- | ------------------------------------------------------------ | -------------- |
+| `--output`       | `-o`  | Output path for downloaded ISO                               | Auto-generated |
+| `--cpu`          | `-c`  | CPU type to emulate                                          | `host`         |
+| `--cpus`         | `-C`  | Number of CPU cores                                          | `2`            |
+| `--memory`       | `-m`  | Amount of VM memory                                          | `2G`           |
+| `--image`        | `-i`  | Path to VM disk image                                        | None           |
+| `--disk-format`  |       | Disk image format                                            | `raw`          |
+| `--size`         | `-s`  | Size of the disk image to create if it doesn't exist         | `20G`          |
+| `--bridge`       | `-b`  | Name of the network bridge to use for networking (e.g., br0) | None           |
+| `--detach`       | `-d`  | Run VM in the background and print VM name                   | `false`        |
+| `--port-forward` | `-p`  | Port forwarding rules (format: hostPort:guestPort)           | None           |
 
 ## 🔧 VM Management Commands
 
-| Command                    | Description                                   |
-| -------------------------- | --------------------------------------------- |
-| `netbsd-up ps`             | List all running virtual machines             |
-| `netbsd-up ps --all`       | List all virtual machines (including stopped) |
-| `netbsd-up start <name>`   | Start a stopped virtual machine               |
-| `netbsd-up stop <name>`    | Stop a running virtual machine                |
-| `netbsd-up inspect <name>` | Show detailed information about a VM          |
+| Command                     | Description                                      |
+| --------------------------- | ------------------------------------------------ |
+| `netbsd-up ps`              | List all running virtual machines                |
+| `netbsd-up ps --all`        | List all virtual machines (including stopped)    |
+| `netbsd-up start <name>`    | Start a stopped virtual machine                  |
+| `netbsd-up start <name> -d` | Start a virtual machine in background (detached) |
+| `netbsd-up stop <name>`     | Stop a running virtual machine                   |
+| `netbsd-up restart <name>`  | Restart a virtual machine                        |
+| `netbsd-up inspect <name>`  | Show detailed information about a VM             |
+| `netbsd-up rm <name>`       | Remove a virtual machine from database           |
+| `netbsd-up logs <name>`     | View logs for a virtual machine                  |
+| `netbsd-up logs <name> -f`  | Follow logs in real-time                         |
 
 ## 📚 Examples
 
@@ -177,7 +227,17 @@ Starts NetBSD 10.1 with 2 CPU cores and 2GB RAM.
 ### 🚀 High-Performance Setup
 
 ```bash
-netbsd-up --cpus 8 --memory 8G --cpu host
+netbsd-up --cpus 8 --memory 8G --cpu host --detach
+```
+
+### 🌐 Custom Port Forwarding
+
+```bash
+# SSH on port 2222, web server on port 8080
+netbsd-up --port-forward "2222:22,8080:80"
+
+# Development setup with multiple ports
+netbsd-up --port-forward "3000:3000,5432:5432" --detach
 ```
 
 ### 💾 Development Environment with Persistent Disk
@@ -197,6 +257,19 @@ netbsd-up 10.1
 netbsd-up 9.4
 ```
 
+### 🔄 Background Operations
+
+```bash
+# Start VM in background
+netbsd-up --detach
+
+# Start existing VM in background
+netbsd-up start my-vm --detach
+
+# Monitor VM logs
+netbsd-up logs my-vm --follow
+```
+
 ### 🔧 VM Management Examples
 
 ```bash
@@ -209,19 +282,56 @@ netbsd-up ps --all
 # Start a specific VM by name
 netbsd-up start my-netbsd-vm
 
+# Start a VM in the background
+netbsd-up start my-netbsd-vm --detach
+
 # Stop a running VM
 netbsd-up stop my-netbsd-vm
 
+# Restart a VM
+netbsd-up restart my-netbsd-vm
+
 # Get detailed information about a VM
 netbsd-up inspect my-netbsd-vm
+
+# Remove a VM from the database
+netbsd-up rm my-netbsd-vm
+
+# View VM logs
+netbsd-up logs my-netbsd-vm
+
+# Follow VM logs in real-time
+netbsd-up logs my-netbsd-vm --follow
 ```
 
 ## 🌐 Networking
 
-The VM automatically sets up network forwarding:
+The VM supports flexible networking configurations:
 
-- 🔑 SSH access: `ssh -p 2222 root@localhost`
-- �️ The VM uses QEMU's user-mode networking
+### 🔌 Default Networking
+
+- 🌐 QEMU's user-mode networking (no special privileges required)
+- 🔑 No default port forwarding (use `--port-forward` for specific needs)
+
+### 🔧 Custom Port Forwarding
+
+Use the `--port-forward` option to map host ports to guest ports:
+
+```bash
+# SSH access on port 2222
+netbsd-up --port-forward "2222:22"
+
+# Multiple port mappings
+netbsd-up --port-forward "2222:22,8080:80,3000:3000"
+```
+
+### 🌉 Bridge Networking
+
+For advanced networking, use bridge mode (requires sudo):
+
+```bash
+netbsd-up --bridge br0
+```
 
 ## 📋 Version Format
 
@@ -245,15 +355,25 @@ release ISO.
 
 ## 💾 Data Storage
 
-NetBSD-UP uses a SQLite database to track virtual machine states and
-configurations. The database stores:
+NetBSD-UP uses a SQLite database (`~/.netbsd-up/state.sqlite`) to track virtual
+machine states and configurations. The database stores:
 
 - VM names and unique identifiers
 - CPU, memory, and disk configurations
-- Network settings (bridge, MAC addresses)
-- Current status (RUNNING, STOPPED)
-- Creation timestamps
+- Network settings (bridge, MAC addresses, port forwarding)
+- Current status (RUNNING, STOPPED) with timestamps
+- Creation and update timestamps
 - Process IDs for running VMs
+- Log file locations for each VM
+
+### 📊 VM Logging
+
+All VM output is automatically logged to `~/.netbsd-up/logs/<vm-name>.log`. You
+can:
+
+- View logs: `netbsd-up logs <vm-name>`
+- Follow logs in real-time: `netbsd-up logs <vm-name> --follow`
+- Access logs directly from the filesystem
 
 ## 📄 License
 
