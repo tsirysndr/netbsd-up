@@ -353,7 +353,7 @@ export function handleInput(input?: string): string {
   if (!input) {
     console.log(
       chalk.blueBright(
-        `No ISO path provided, defaulting to ${chalk.cyan("FreeBSD")} ${
+        `No ISO path provided, defaulting to ${chalk.cyan("NetBSD")} ${
           chalk.cyan(DEFAULT_VERSION)
         }...`,
       ),
