@@ -17,9 +17,9 @@ sensible defaults.
 - 📥 **Automatic ISO download**: Downloads NetBSD ISO images from official CDN
 - 🏷️ **Version-aware**: Specify NetBSD versions and automatically construct
   download URLs
-- 🔄 **Flexible input**: Support for local ISO files, URLs, or version numbers
+- 🔄 **Flexible input**: Support for local ISO files, URLs, version numbers, or OCI registry images
 - ⚙️ **Configurable VM settings**: Customize CPU, memory, cores, and disk
-  options
+  options via CLI or configuration file
 - ⚡ **KVM acceleration**: Automatically enables hardware virtualization for
   better performance
 - 🌐 **Port forwarding**: Customizable port forwarding rules for network access
@@ -33,6 +33,9 @@ sensible defaults.
   configurations
 - 🏷️ **Auto-naming**: Automatic generation of unique VM names
 - 🌉 **Bridge networking**: Support for custom network bridges
+- 📦 **OCI Registry Support**: Pull, push, and tag VM images to/from OCI-compliant registries (GitHub Container Registry, Docker Hub, etc.)
+- 🖼️ **Image Management**: List and remove local VM images
+- 📝 **Configuration File**: Initialize and use `vmconfig.toml` for persistent VM settings
 
 ## 📋 Requirements
 
@@ -86,7 +89,31 @@ netbsd-up /path/to/netbsd.iso
 netbsd-up https://cdn.netbsd.org/pub/NetBSD/images/10.1/NetBSD-10.1-amd64.iso
 ```
 
-### 🔧 VM Management Commands
+### � Pull from OCI Registry
+
+```bash
+# Pull from GitHub Container Registry
+netbsd-up ghcr.io/tsirysndr/netbsd:10.1
+
+# Pull from Docker Hub
+netbsd-up docker.io/username/netbsd:10.1
+```
+
+### 📋 Initialize Configuration File
+
+Create a `vmconfig.toml` file with default settings:
+
+```bash
+netbsd-up init
+```
+
+Then customize the file and start the VM:
+
+```bash
+netbsd-up
+```
+
+### �🔧 VM Management Commands
 
 List all running VMs:
 
@@ -148,6 +175,58 @@ Inspect VM details:
 netbsd-up inspect <vm-name>
 ```
 
+### 📦 OCI Registry Management
+
+Login to a registry:
+
+```bash
+netbsd-up login ghcr.io -u username
+# Or with Docker Hub
+netbsd-up login docker.io -u username
+```
+
+Pull a VM image:
+
+```bash
+netbsd-up pull ghcr.io/tsirysndr/netbsd:10.1
+```
+
+Push a VM image:
+
+```bash
+netbsd-up push ghcr.io/username/netbsd:10.1
+```
+
+Tag a VM:
+
+```bash
+netbsd-up tag my-vm ghcr.io/username/netbsd:custom
+```
+
+Run a VM from an image:
+
+```bash
+netbsd-up run ghcr.io/tsirysndr/netbsd:10.1 --detach
+```
+
+List local images:
+
+```bash
+netbsd-up images
+```
+
+Remove a local image:
+
+```bash
+netbsd-up rmi ghcr.io/tsirysndr/netbsd:10.1
+```
+
+Logout from a registry:
+
+```bash
+netbsd-up logout ghcr.io
+```
+
 ## 🖥️ Console Setup
 
 When NetBSD boots, you'll see the boot menu. For the best experience with the
@@ -155,7 +234,8 @@ serial console:
 
 1. **🔧 Select option `3. Drop to boot prompt`**
 2. **⚙️ Configure console output:**
-   ```
+
+   ```text
    consdev com0
    boot
    ```
@@ -198,21 +278,31 @@ netbsd-up --memory 8G --cpus 4 --detach --port-forward "3000:3000"
 | `--bridge`       | `-b`  | Name of the network bridge to use for networking (e.g., br0) | None           |
 | `--detach`       | `-d`  | Run VM in the background and print VM name                   | `false`        |
 | `--port-forward` | `-p`  | Port forwarding rules (format: hostPort:guestPort)           | None           |
+| `--install`      |       | Persist changes to the VM disk image                         | `false`        |
 
 ## 🔧 VM Management Commands
 
-| Command                     | Description                                      |
-| --------------------------- | ------------------------------------------------ |
-| `netbsd-up ps`              | List all running virtual machines                |
-| `netbsd-up ps --all`        | List all virtual machines (including stopped)    |
-| `netbsd-up start <name>`    | Start a stopped virtual machine                  |
-| `netbsd-up start <name> -d` | Start a virtual machine in background (detached) |
-| `netbsd-up stop <name>`     | Stop a running virtual machine                   |
-| `netbsd-up restart <name>`  | Restart a virtual machine                        |
-| `netbsd-up inspect <name>`  | Show detailed information about a VM             |
-| `netbsd-up rm <name>`       | Remove a virtual machine from database           |
-| `netbsd-up logs <name>`     | View logs for a virtual machine                  |
-| `netbsd-up logs <name> -f`  | Follow logs in real-time                         |
+| Command                          | Description                                             |
+| -------------------------------- | ------------------------------------------------------- |
+| `netbsd-up init`                 | Initialize a default VM configuration file              |
+| `netbsd-up ps`                   | List all running virtual machines                       |
+| `netbsd-up ps --all`             | List all virtual machines (including stopped)           |
+| `netbsd-up start <name>`         | Start a stopped virtual machine                         |
+| `netbsd-up start <name> -d`      | Start a virtual machine in background (detached)        |
+| `netbsd-up stop <name>`          | Stop a running virtual machine                          |
+| `netbsd-up restart <name>`       | Restart a virtual machine                               |
+| `netbsd-up inspect <name>`       | Show detailed information about a VM                    |
+| `netbsd-up rm <name>`            | Remove a virtual machine from database                  |
+| `netbsd-up logs <name>`          | View logs for a virtual machine                         |
+| `netbsd-up logs <name> -f`       | Follow logs in real-time                                |
+| `netbsd-up pull <image>`         | Pull VM image from OCI registry                         |
+| `netbsd-up push <image>`         | Push VM image to OCI registry                           |
+| `netbsd-up tag <vm-name> <image>`| Tag a VM with an image name                             |
+| `netbsd-up run <image>`          | Create and run a VM from an image                       |
+| `netbsd-up images`               | List all local VM images                                |
+| `netbsd-up rmi <image>`          | Remove a local VM image                                 |
+| `netbsd-up login <registry>`     | Authenticate to an OCI registry                         |
+| `netbsd-up logout <registry>`    | Logout from an OCI registry                             |
 
 ## 📚 Examples
 
@@ -257,7 +347,53 @@ netbsd-up 10.1
 netbsd-up 9.4
 ```
 
-### 🔄 Background Operations
+### � OCI Registry Examples
+
+```bash
+# Pull and start a VM from GitHub Container Registry
+netbsd-up ghcr.io/tsirysndr/netbsd:10.1
+
+# Login to GitHub Container Registry
+netbsd-up login ghcr.io -u username
+
+# Tag an existing VM
+netbsd-up tag my-vm ghcr.io/username/netbsd:custom
+
+# Push the tagged VM to registry
+netbsd-up push ghcr.io/username/netbsd:custom
+
+# Run a VM from an image with custom settings
+netbsd-up run ghcr.io/tsirysndr/netbsd:10.1 --memory 4G --cpus 4 --detach
+```
+
+### 📝 Configuration File Example
+
+```bash
+# Initialize a VM configuration file
+netbsd-up init
+
+# Edit vmconfig.toml to customize settings
+# Then start the VM using the config
+netbsd-up
+```
+
+Example `vmconfig.toml`:
+
+```toml
+[vm]
+iso = "https://cdn.netbsd.org/pub/NetBSD/images/10.1/NetBSD-10.1-amd64.iso"
+cpu = "host"
+cpus = 4
+memory = "4G"
+
+[network]
+port_forward = "2222:22,8080:80"
+
+[options]
+detach = true
+```
+
+### �🔄 Background Operations
 
 ```bash
 # Start VM in background
@@ -302,6 +438,28 @@ netbsd-up logs my-netbsd-vm
 
 # Follow VM logs in real-time
 netbsd-up logs my-netbsd-vm --follow
+```
+
+### 🖼️ Image Management Examples
+
+```bash
+# List all local VM images
+netbsd-up images
+
+# Remove a local VM image
+netbsd-up rmi ghcr.io/tsirysndr/netbsd:10.1
+
+# Pull a VM image from registry
+netbsd-up pull ghcr.io/tsirysndr/netbsd:10.1
+
+# Tag a VM for pushing to registry
+netbsd-up tag my-vm ghcr.io/username/netbsd:custom
+
+# Push a VM image to registry
+netbsd-up push ghcr.io/username/netbsd:custom
+
+# Logout from registry
+netbsd-up logout ghcr.io
 ```
 
 ## 🌐 Networking
@@ -375,7 +533,94 @@ can:
 - Follow logs in real-time: `netbsd-up logs <vm-name> --follow`
 - Access logs directly from the filesystem
 
-## 📄 License
+## � OCI Registry Support
+
+NetBSD-UP supports pulling and pushing VM images to OCI-compliant registries
+such as GitHub Container Registry (ghcr.io), Docker Hub (docker.io), and
+others. This enables sharing and distributing pre-configured NetBSD VMs.
+
+### 🔐 Authentication
+
+```bash
+# Login to GitHub Container Registry
+netbsd-up login ghcr.io -u username
+
+# Login to Docker Hub
+netbsd-up login docker.io -u username
+
+# Logout from a registry
+netbsd-up logout ghcr.io
+```
+
+### 📥 Pulling Images
+
+```bash
+# Pull from GitHub Container Registry
+netbsd-up pull ghcr.io/tsirysndr/netbsd:10.1
+
+# Start a VM directly from registry
+netbsd-up ghcr.io/tsirysndr/netbsd:10.1
+
+# Run a VM from an image with custom settings
+netbsd-up run ghcr.io/tsirysndr/netbsd:10.1 --memory 4G --cpus 4
+```
+
+### 📤 Pushing Images
+
+```bash
+# Tag an existing VM
+netbsd-up tag my-vm ghcr.io/username/netbsd:custom
+
+# Push the tagged VM to registry
+netbsd-up push ghcr.io/username/netbsd:custom
+```
+
+### 🖼️ Image Management
+
+```bash
+# List local images
+netbsd-up images
+
+# Remove a local image
+netbsd-up rmi ghcr.io/tsirysndr/netbsd:10.1
+```
+
+## 📝 VM Configuration File
+
+NetBSD-UP supports using a `vmconfig.toml` file for persistent VM
+configuration. This is useful for reproducible VM setups.
+
+### Creating a Configuration File
+
+```bash
+netbsd-up init
+```
+
+This creates a `vmconfig.toml` file with default settings:
+
+```toml
+[vm]
+iso = "https://cdn.netbsd.org/pub/NetBSD/images/10.1/NetBSD-10.1-amd64.iso"
+cpu = "host"
+cpus = 2
+memory = "2G"
+
+[network]
+
+[options]
+```
+
+### Using the Configuration File
+
+Simply run `netbsd-up` in the directory containing `vmconfig.toml`:
+
+```bash
+netbsd-up
+```
+
+CLI options will override configuration file settings.
+
+## �📄 License
 
 See [LICENSE](LICENSE) file for details.
 
