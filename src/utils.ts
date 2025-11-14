@@ -4,7 +4,7 @@ import chalk from "chalk";
 import { Data, Effect, pipe } from "effect";
 import Moniker from "moniker";
 import { EMPTY_DISK_THRESHOLD_KB, LOGS_DIR } from "./constants.ts";
-import { Image } from "./db.ts";
+import type { Image } from "./db.ts";
 import { generateRandomMacAddress } from "./network.ts";
 import { saveInstanceState, updateInstanceState } from "./state.ts";
 
@@ -22,6 +22,7 @@ export interface Options {
   portForward?: string;
   detach?: boolean;
   install?: boolean;
+  volume?: string;
 }
 
 class LogCommandError extends Data.TaggedError("LogCommandError")<{
