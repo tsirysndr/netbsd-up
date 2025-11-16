@@ -17,7 +17,8 @@ sensible defaults.
 - 📥 **Automatic ISO download**: Downloads NetBSD ISO images from official CDN
 - 🏷️ **Version-aware**: Specify NetBSD versions and automatically construct
   download URLs
-- 🔄 **Flexible input**: Support for local ISO files, URLs, version numbers, or OCI registry images
+- 🔄 **Flexible input**: Support for local ISO files, URLs, version numbers, or
+  OCI registry images
 - ⚙️ **Configurable VM settings**: Customize CPU, memory, cores, and disk
   options via CLI or configuration file
 - ⚡ **KVM acceleration**: Automatically enables hardware virtualization for
@@ -33,9 +34,15 @@ sensible defaults.
   configurations
 - 🏷️ **Auto-naming**: Automatic generation of unique VM names
 - 🌉 **Bridge networking**: Support for custom network bridges
-- 📦 **OCI Registry Support**: Pull, push, and tag VM images to/from OCI-compliant registries (GitHub Container Registry, Docker Hub, etc.)
+- 📦 **OCI Registry Support**: Pull, push, and tag VM images to/from
+  OCI-compliant registries (GitHub Container Registry, Docker Hub, etc.)
 - 🖼️ **Image Management**: List and remove local VM images
-- 📝 **Configuration File**: Initialize and use `vmconfig.toml` for persistent VM settings
+- 📝 **Configuration File**: Initialize and use `vmconfig.toml` for persistent
+  VM settings
+- 💽 **Volume Management**: Create, list, inspect, and remove persistent volumes
+- 🔌 **Volume Attachment**: Attach persistent volumes to VMs for data storage
+- 🌐 **HTTP API**: RESTful API for managing machines, images, and volumes
+  programmatically
 
 ## 📋 Requirements
 
@@ -260,6 +267,9 @@ netbsd-up --detach
 # Custom port forwarding (SSH on port 2222, HTTP on port 8080)
 netbsd-up --port-forward "2222:22,8080:80"
 
+# Attach a volume to the VM
+netbsd-up start my-vm --volume my-data-volume
+
 # Combine multiple options
 netbsd-up --memory 8G --cpus 4 --detach --port-forward "3000:3000"
 ```
@@ -279,30 +289,38 @@ netbsd-up --memory 8G --cpus 4 --detach --port-forward "3000:3000"
 | `--detach`       | `-d`  | Run VM in the background and print VM name                   | `false`        |
 | `--port-forward` | `-p`  | Port forwarding rules (format: hostPort:guestPort)           | None           |
 | `--install`      |       | Persist changes to the VM disk image                         | `false`        |
+| `--volume`       | `-v`  | Name of the volume to attach to the VM                       | None           |
 
 ## 🔧 VM Management Commands
 
-| Command                          | Description                                             |
-| -------------------------------- | ------------------------------------------------------- |
-| `netbsd-up init`                 | Initialize a default VM configuration file              |
-| `netbsd-up ps`                   | List all running virtual machines                       |
-| `netbsd-up ps --all`             | List all virtual machines (including stopped)           |
-| `netbsd-up start <name>`         | Start a stopped virtual machine                         |
-| `netbsd-up start <name> -d`      | Start a virtual machine in background (detached)        |
-| `netbsd-up stop <name>`          | Stop a running virtual machine                          |
-| `netbsd-up restart <name>`       | Restart a virtual machine                               |
-| `netbsd-up inspect <name>`       | Show detailed information about a VM                    |
-| `netbsd-up rm <name>`            | Remove a virtual machine from database                  |
-| `netbsd-up logs <name>`          | View logs for a virtual machine                         |
-| `netbsd-up logs <name> -f`       | Follow logs in real-time                                |
-| `netbsd-up pull <image>`         | Pull VM image from OCI registry                         |
-| `netbsd-up push <image>`         | Push VM image to OCI registry                           |
-| `netbsd-up tag <vm-name> <image>`| Tag a VM with an image name                             |
-| `netbsd-up run <image>`          | Create and run a VM from an image                       |
-| `netbsd-up images`               | List all local VM images                                |
-| `netbsd-up rmi <image>`          | Remove a local VM image                                 |
-| `netbsd-up login <registry>`     | Authenticate to an OCI registry                         |
-| `netbsd-up logout <registry>`    | Logout from an OCI registry                             |
+| Command                           | Description                                      |
+| --------------------------------- | ------------------------------------------------ |
+| `netbsd-up init`                  | Initialize a default VM configuration file       |
+| `netbsd-up ps`                    | List all running virtual machines                |
+| `netbsd-up ps --all`              | List all virtual machines (including stopped)    |
+| `netbsd-up start <name>`          | Start a stopped virtual machine                  |
+| `netbsd-up start <name> -d`       | Start a virtual machine in background (detached) |
+| `netbsd-up start <name> -v <vol>` | Start a VM and attach a volume                   |
+| `netbsd-up stop <name>`           | Stop a running virtual machine                   |
+| `netbsd-up restart <name>`        | Restart a virtual machine                        |
+| `netbsd-up inspect <name>`        | Show detailed information about a VM             |
+| `netbsd-up rm <name>`             | Remove a virtual machine from database           |
+| `netbsd-up logs <name>`           | View logs for a virtual machine                  |
+| `netbsd-up logs <name> -f`        | Follow logs in real-time                         |
+| `netbsd-up pull <image>`          | Pull VM image from OCI registry                  |
+| `netbsd-up push <image>`          | Push VM image to OCI registry                    |
+| `netbsd-up tag <vm-name> <image>` | Tag a VM with an image name                      |
+| `netbsd-up run <image>`           | Create and run a VM from an image                |
+| `netbsd-up run <image> -v <vol>`  | Run a VM from an image with an attached volume   |
+| `netbsd-up images`                | List all local VM images                         |
+| `netbsd-up rmi <image>`           | Remove a local VM image                          |
+| `netbsd-up login <registry>`      | Authenticate to an OCI registry                  |
+| `netbsd-up logout <registry>`     | Logout from an OCI registry                      |
+| `netbsd-up volumes`               | List all volumes                                 |
+| `netbsd-up volume rm <name>`      | Remove a volume                                  |
+| `netbsd-up volume inspect <name>` | Inspect a volume                                 |
+| `netbsd-up serve`                 | Start the HTTP API server                        |
+| `netbsd-up serve -p <port>`       | Start the HTTP API server on a specific port     |
 
 ## 📚 Examples
 
@@ -462,6 +480,45 @@ netbsd-up push ghcr.io/username/netbsd:custom
 netbsd-up logout ghcr.io
 ```
 
+### 💽 Volume Management Examples
+
+```bash
+# List all volumes
+netbsd-up volumes
+
+# Start a VM with a volume attached
+netbsd-up start my-vm --volume my-data-volume
+
+# Run a VM from an image with a volume
+netbsd-up run ghcr.io/tsirysndr/netbsd:10.1 --volume db-storage
+
+# Inspect a volume
+netbsd-up volume inspect my-data-volume
+
+# Remove a volume
+netbsd-up volume rm my-data-volume
+```
+
+### 🌐 HTTP API Examples
+
+```bash
+# Start the API server
+netbsd-up serve
+
+# Start on custom port
+netbsd-up serve --port 9000
+
+# List all machines via API
+curl -H "Authorization: Bearer your-token" http://localhost:8892/machines
+
+# Start a machine via API
+curl -X POST -H "Authorization: Bearer your-token" \
+  http://localhost:8892/machines/my-vm/start
+
+# List all volumes via API
+curl -H "Authorization: Bearer your-token" http://localhost:8892/volumes
+```
+
 ## 🌐 Networking
 
 The VM supports flexible networking configurations:
@@ -514,7 +571,7 @@ release ISO.
 ## 💾 Data Storage
 
 NetBSD-UP uses a SQLite database (`~/.netbsd-up/state.sqlite`) to track virtual
-machine states and configurations. The database stores:
+machine states, configurations, and volumes. The database stores:
 
 - VM names and unique identifiers
 - CPU, memory, and disk configurations
@@ -523,6 +580,7 @@ machine states and configurations. The database stores:
 - Creation and update timestamps
 - Process IDs for running VMs
 - Log file locations for each VM
+- Volume information and attachments
 
 ### 📊 VM Logging
 
@@ -536,8 +594,8 @@ can:
 ## � OCI Registry Support
 
 NetBSD-UP supports pulling and pushing VM images to OCI-compliant registries
-such as GitHub Container Registry (ghcr.io), Docker Hub (docker.io), and
-others. This enables sharing and distributing pre-configured NetBSD VMs.
+such as GitHub Container Registry (ghcr.io), Docker Hub (docker.io), and others.
+This enables sharing and distributing pre-configured NetBSD VMs.
 
 ### 🔐 Authentication
 
@@ -587,8 +645,8 @@ netbsd-up rmi ghcr.io/tsirysndr/netbsd:10.1
 
 ## 📝 VM Configuration File
 
-NetBSD-UP supports using a `vmconfig.toml` file for persistent VM
-configuration. This is useful for reproducible VM setups.
+NetBSD-UP supports using a `vmconfig.toml` file for persistent VM configuration.
+This is useful for reproducible VM setups.
 
 ### Creating a Configuration File
 
@@ -620,7 +678,110 @@ netbsd-up
 
 CLI options will override configuration file settings.
 
-## �📄 License
+## 💽 Volume Management
+
+NetBSD-UP supports persistent volumes that can be attached to VMs for data
+storage. Volumes are stored as disk images in `~/.netbsd-up/volumes/` and
+persist independently of VM lifecycles.
+
+### Creating and Using Volumes
+
+Volumes are automatically created when you attach them to a VM:
+
+```bash
+# Start a VM with a volume (volume is created if it doesn't exist)
+netbsd-up start my-vm --volume my-data-volume
+
+# Run a new VM from an image with an attached volume
+netbsd-up run ghcr.io/tsirysndr/netbsd:10.1 --volume db-storage
+```
+
+### Managing Volumes
+
+```bash
+# List all volumes
+netbsd-up volumes
+
+# Inspect a volume
+netbsd-up volume inspect my-data-volume
+
+# Remove a volume
+netbsd-up volume rm my-data-volume
+```
+
+### Volume Features
+
+- 📦 **Persistent Storage**: Volumes persist independently of VMs
+- 🔄 **Reusable**: Attach the same volume to different VMs
+- 💾 **Automatic Creation**: Volumes are created on first use
+- 📊 **Tracking**: All volumes are tracked in the SQLite database
+
+## 🌐 HTTP API
+
+NetBSD-UP includes a RESTful HTTP API for programmatic management of machines,
+images, and volumes. The API is protected by bearer token authentication.
+
+### Starting the API Server
+
+```bash
+# Start on default port (8892)
+netbsd-up serve
+
+# Start on custom port
+netbsd-up serve --port 9000
+
+# Set API token via environment variable
+export NETBSD_UP_API_TOKEN="your-secure-token"
+netbsd-up serve
+```
+
+If no `NETBSD_UP_API_TOKEN` is set, a random token will be generated and
+displayed.
+
+### API Endpoints
+
+The API provides the following endpoints:
+
+#### Machines
+
+- `GET /machines` - List all machines
+- `GET /machines/:id` - Get machine details
+- `POST /machines` - Create a new machine
+- `POST /machines/:id/start` - Start a machine
+- `POST /machines/:id/stop` - Stop a machine
+- `POST /machines/:id/restart` - Restart a machine
+- `DELETE /machines/:id` - Remove a machine
+
+#### Images
+
+- `GET /images` - List all images
+- `GET /images/:name` - Get image details
+- `POST /images/pull` - Pull an image from registry
+- `POST /images/push` - Push an image to registry
+- `DELETE /images/:name` - Remove an image
+
+#### Volumes
+
+- `GET /volumes` - List all volumes
+- `GET /volumes/:name` - Get volume details
+- `POST /volumes` - Create a volume
+- `DELETE /volumes/:name` - Remove a volume
+
+### API Authentication
+
+All API endpoints require bearer token authentication:
+
+```bash
+# Example API request
+curl -H "Authorization: Bearer your-token" http://localhost:8892/machines
+```
+
+### Environment Variables
+
+- `NETBSD_UP_API_TOKEN` - Set the API authentication token
+- `NETBSD_UP_PORT` - Set the default API server port
+
+## 📄 License
 
 See [LICENSE](LICENSE) file for details.
 
